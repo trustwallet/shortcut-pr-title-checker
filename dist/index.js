@@ -31978,7 +31978,7 @@ async function validateTicket(ticketId, authToken, expectedStates, checkUniquePR
         const prUrls = linkedPRs.map(pr => pr.url).join(', ');
         throw new Error(`Multiple PRs linked to ticket SC-${ticketId}: ${prUrls}`);
       }
-    }
+    }t
     
     return {
       id: ticket.id,
@@ -32010,6 +32010,10 @@ async function run() {
       .filter(state => state.length > 0);
     const enforcePrefixCheck = (core.getInput('enforce_prefix_check') || 'false').toLowerCase() === 'true';
     const enforceSinglePrForEachTicket = (core.getInput('enforce_single_pr_for_each_ticket') || 'true').toLowerCase() === 'true';
+    const skipPrTitleInclude = core.getInput('skip_pr_title_include', { required: false })
+      .split(',')
+      .map(str => str.trim())
+      .filter(str => str.length > 0);
 
     // Mask sensitive inputs in logs
     core.setSecret(githubToken);
@@ -32037,6 +32041,23 @@ async function run() {
 
     const prTitle = pr.title;
     core.info(`Validating PR #${prNumber}: "${prTitle}"`);
+
+    // Check if PR title should be skipped
+    if (skipPrTitleInclude.length > 0) {
+      const shouldSkip = skipPrTitleInclude.some(skipString => 
+        prTitle.toLowerCase().includes(skipString.toLowerCase())
+      );
+      
+      if (shouldSkip) {
+        const matchedString = skipPrTitleInclude.find(skipString => 
+          prTitle.toLowerCase().includes(skipString.toLowerCase())
+        );
+        core.info(`⏭️ Skipping validation for PR #${prNumber}: Title contains "${matchedString}"`);
+        core.setOutput('skipped', 'true');
+        core.setOutput('skip_reason', `Title contains: ${matchedString}`);
+        return;
+      }
+    }
 
     // Extract ticket ID from PR title
     const ticketId = enforcePrefixCheck ? extractPrefixTicketId(prTitle) : extractTicketId(prTitle);

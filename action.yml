@@ -27,6 +27,10 @@ inputs:
     description: 'If true, ensure only one PR is linked to the ticket in Shortcut (checks pull_requests.url)'
     required: false
     default: 'true'
+  skip_pr_title_include:
+    description: 'Comma-separated list of strings to check in PR title. If any string is found, skip validation'
+    required: false
+    default: ''
 
 outputs:
   ticket_id:
@@ -35,6 +39,10 @@ outputs:
     description: 'The Shortcut ticket title'
   ticket_state:
     description: 'The current state of the Shortcut ticket'
+  skipped:
+    description: 'Whether validation was skipped (true/false)'
+  skip_reason:
+    description: 'Reason for skipping validation (if applicable)'
 
 runs:
   using: 'node20'

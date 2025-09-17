@@ -37,6 +37,7 @@ jobs:
           expected_states: "in progress,to do,ready for review"
           enforce_prefix_check: "true"   # require prefix formats
           enforce_single_pr_for_each_ticket: "true"  # ensure only one PR linked per ticket
+          skip_pr_title_include: "Bump SDK,no ticket for this PR"  # skip validation for these cases
 ```
 
 ### Advanced Usage
@@ -88,6 +89,7 @@ jobs:
 | `expected_states` | ✅ | Comma-separated list of expected Shortcut ticket states | `"in progress,to do,ready for review"` |
 | `enforce_prefix_check` | ❌ | Require ticket prefix in PR title (see formats) | `"false"` |
 | `enforce_single_pr_for_each_ticket` | ❌ | Ensure only one PR linked per ticket (checks Shortcut API pull_requests.url) | `"true"` |
+| `skip_pr_title_include` | ❌ | Comma-separated list of strings to check in PR title. If any string is found, skip validation | `""` |
 
 ## Outputs
 
@@ -96,6 +98,8 @@ jobs:
 | `ticket_id` | The validated Shortcut ticket ID |
 | `ticket_title` | The Shortcut ticket title |
 | `ticket_state` | The current state of the Shortcut ticket |
+| `skipped` | Whether validation was skipped (true/false) |
+| `skip_reason` | Reason for skipping validation (if applicable) |
 
 ## Supported Ticket Formats
 
@@ -115,6 +119,24 @@ When `enforce_prefix_check` is enabled, only the following prefix formats are va
 - `sc-1234: Title`
 - `#sc-1234: Title`
 - `[sc-1234]: Title`
+
+## Skip Validation
+
+The action can skip validation for PRs with specific title patterns using the `skip_pr_title_include` parameter:
+
+```yaml
+skip_pr_title_include: "Bump SDK,no ticket for this PR,chore:"
+```
+
+This will skip validation for PRs with titles containing any of these strings (case-insensitive):
+- "Bump SDK" → `Bump SDK to v2.1.0`
+- "no ticket for this PR" → `no ticket for this PR - quick fix`
+- "chore:" → `chore: update dependencies`
+
+When skipped, the action will:
+- ✅ Pass the step (no failure)
+- 📝 Log the skip reason
+- 🔄 Set outputs: `skipped: true`, `skip_reason: "Title contains: ..."`
 
 ## Setup
 
