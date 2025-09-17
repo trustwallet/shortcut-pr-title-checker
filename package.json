@@ -1,0 +1,25 @@
+{
+  "name": "shortcut-pr-validator",
+  "version": "1.0.0",
+  "description": "GitHub Action to validate PR titles against Shortcut ticket numbers",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.js -o dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "github-action",
+    "shortcut",
+    "pr-validation",
+    "ticket-validation"
+  ],
+  "author": "TWallet Team",
+  "license": "MIT",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@actions/github": "^6.0.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.0"
+  }
+}

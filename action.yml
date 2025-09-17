@@ -1,0 +1,41 @@
+name: 'Shortcut PR Title Validator'
+description: 'Validates that PR titles contain valid Shortcut ticket numbers'
+author: 'TWallet Team'
+
+inputs:
+  github_auth_token:
+    description: 'GitHub authentication token with repo access'
+    required: true
+  github_repo_name:
+    description: 'Repository name in format owner/repo'
+    required: true
+  shortcut_auth_token:
+    description: 'Shortcut API authentication token'
+    required: true
+  pr_number:
+    description: 'Pull request number to validate'
+    required: true
+  expected_states:
+    description: 'Comma-separated list of expected Shortcut ticket states'
+    required: true
+    default: 'in progress,to do,ready for review'
+  enforce_prefix_check:
+    description: 'If true, require the ticket number/pattern at the beginning of the PR title'
+    required: false
+    default: 'false'
+  enforce_single_pr_for_each_ticket:
+    description: 'If true, ensure only one PR is linked to the ticket in Shortcut (checks pull_requests.url)'
+    required: false
+    default: 'true'
+
+outputs:
+  ticket_id:
+    description: 'The validated Shortcut ticket ID'
+  ticket_title:
+    description: 'The Shortcut ticket title'
+  ticket_state:
+    description: 'The current state of the Shortcut ticket'
+
+runs:
+  using: 'node20'
+  main: 'dist/index.js'
