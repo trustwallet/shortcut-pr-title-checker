@@ -29936,7 +29936,10 @@ const https = __nccwpck_require__(5692);
 function extractTicketId(prTitle) {
   const patterns = [
     /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)-(\d+)(?:\s|$|:)/i,
-    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$|:)/i
+    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$|:)/i,
+    // Support for plain number patterns like "#94558: title" or "94558: title" (must have space after colon and be at start)
+    /^#(\d+):\s+/i,
+    /^(\d+):\s+/i
   ];
   
   for (const pattern of patterns) {

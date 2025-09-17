@@ -46,7 +46,6 @@ describe('Ticket ID Extraction Functions', () => {
     test('should return null for invalid formats', () => {
       expect(extractTicketId('Add new feature')).toBeNull();
       expect(extractTicketId('Fix bug')).toBeNull();
-      expect(extractTicketId('123: Title')).toBeNull();
       expect(extractTicketId('SC-')).toBeNull();
       expect(extractTicketId('SC-abc')).toBeNull();
       expect(extractTicketId('')).toBeNull();

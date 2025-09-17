@@ -104,4 +104,35 @@ describe('Skip Logic Tests', () => {
       expect(actualShouldSkip).toBe(shouldSkip);
     });
   });
+
+  test('should skip when title contains "Bump SDK" pattern', () => {
+    const skipIfTitleContains = ['Bump SDK'];
+    
+    const testCases = [
+      { title: 'Bump SDK to 1.x.0', shouldSkip: true, matchedString: 'Bump SDK' },
+      { title: 'Bump SDK to v2.1.0', shouldSkip: true, matchedString: 'Bump SDK' },
+      { title: 'Bump SDK to latest', shouldSkip: true, matchedString: 'Bump SDK' },
+      { title: 'BUMP SDK to 1.x.0', shouldSkip: true, matchedString: 'Bump SDK' },
+      { title: 'bump sdk to 1.x.0', shouldSkip: true, matchedString: 'Bump SDK' },
+      { title: 'Bump SDK', shouldSkip: true, matchedString: 'Bump SDK' },
+      { title: 'SC-123: Add feature', shouldSkip: false, matchedString: null },
+      { title: 'Fix bug in authentication', shouldSkip: false, matchedString: null },
+      { title: 'Update documentation', shouldSkip: false, matchedString: null }
+    ];
+
+    testCases.forEach(({ title, shouldSkip, matchedString }) => {
+      const actualShouldSkip = skipIfTitleContains.some(skipString => 
+        title.toLowerCase().includes(skipString.toLowerCase())
+      );
+      
+      expect(actualShouldSkip).toBe(shouldSkip);
+      
+      if (shouldSkip) {
+        const actualMatchedString = skipIfTitleContains.find(skipString => 
+          title.toLowerCase().includes(skipString.toLowerCase())
+        );
+        expect(actualMatchedString).toBe(matchedString);
+      }
+    });
+  });
 });

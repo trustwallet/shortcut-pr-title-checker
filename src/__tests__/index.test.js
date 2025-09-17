@@ -26,12 +26,50 @@ describe('Ticket ID Extraction', () => {
     test('should return null for invalid formats', () => {
       expect(extractTicketId('Add new feature')).toBeNull();
       expect(extractTicketId('Fix bug')).toBeNull();
-      expect(extractTicketId('123: Title')).toBeNull();
       expect(extractTicketId('SC-')).toBeNull();
     });
 
     test('should handle multiple ticket numbers (return first)', () => {
       expect(extractTicketId('SC-123 and SC-456')).toBe('123');
+    });
+
+    test('should support flexible number formats anywhere in title', () => {
+      expect(extractTicketId(' 123 : test')).toBe('123');
+      expect(extractTicketId(' 123: test')).toBe('123');
+      expect(extractTicketId('123 : test')).toBe('123');
+      expect(extractTicketId('123:adfadf')).toBe('123');
+      expect(extractTicketId('123-adfadf')).toBe('123');
+      expect(extractTicketId('123 - adfadf')).toBe('123');
+      expect(extractTicketId('123- adfadf')).toBe('123');
+      expect(extractTicketId(' # 123 : test')).toBe('123');
+      expect(extractTicketId(' #123 : test')).toBe('123');
+      expect(extractTicketId('#123: test')).toBe('123');
+      expect(extractTicketId('#123 : test')).toBe('123');
+      expect(extractTicketId('#123:adfadf')).toBe('123');
+      expect(extractTicketId(' #123 - test')).toBe('123');
+    });
+
+    test('should support all specified valid formats for extractTicketId', () => {
+      // Test all the specific formats mentioned in requirements
+      const validFormats = [
+        ' 123 : test',
+        ' 123: test',
+        '123 : test',
+        '123:adfadf',
+        '123-adfadf',
+        '123 - adfadf',
+        '123- adfadf',
+        ' # 123 : test',
+        ' #123 : test',
+        '#123: test',
+        '#123 : test',
+        '#123:adfadf',
+        ' #123 - test'
+      ];
+
+      validFormats.forEach(format => {
+        expect(extractTicketId(format)).toBe('123');
+      });
     });
   });
 
@@ -59,6 +97,66 @@ describe('Ticket ID Extraction', () => {
     test('should extract [sc-1234]: format', () => {
       expect(extractPrefixTicketId('[sc-1234]: Add feature')).toBe('1234');
       expect(extractPrefixTicketId('[SC-5678]: Fix bug')).toBe('5678');
+    });
+
+    test('should extract #number: format (with hash)', () => {
+      expect(extractPrefixTicketId('#94558: fix xyz')).toBe('94558');
+      expect(extractPrefixTicketId('#1234: Add feature')).toBe('1234');
+      expect(extractPrefixTicketId('#5678: Fix bug')).toBe('5678');
+    });
+
+    test('should extract number: format (without hash)', () => {
+      expect(extractPrefixTicketId('94558: add feature')).toBe('94558');
+      expect(extractPrefixTicketId('1234: Add feature')).toBe('1234');
+      expect(extractPrefixTicketId('5678: Fix bug')).toBe('5678');
+    });
+
+    test('should handle spaces around number formats', () => {
+      expect(extractPrefixTicketId(' 94558: chore')).toBe('94558');
+      expect(extractPrefixTicketId('# 94558: fix xyz')).toBe('94558');
+      expect(extractPrefixTicketId('  #94558: fix xyz')).toBe('94558');
+    });
+
+    test('should support flexible spacing formats', () => {
+      expect(extractPrefixTicketId(' 123 : test')).toBe('123');
+      expect(extractPrefixTicketId(' 123: test')).toBe('123');
+      expect(extractPrefixTicketId('123 : test')).toBe('123');
+      expect(extractPrefixTicketId('123:adfadf')).toBe('123');
+      expect(extractPrefixTicketId('123-adfadf')).toBe('123');
+      expect(extractPrefixTicketId('123 - adfadf')).toBe('123');
+      expect(extractPrefixTicketId('123- adfadf')).toBe('123');
+    });
+
+    test('should support flexible hash spacing formats', () => {
+      expect(extractPrefixTicketId(' # 123 : test')).toBe('123');
+      expect(extractPrefixTicketId(' #123 : test')).toBe('123');
+      expect(extractPrefixTicketId('#123: test')).toBe('123');
+      expect(extractPrefixTicketId('#123 : test')).toBe('123');
+      expect(extractPrefixTicketId('#123:adfadf')).toBe('123');
+      expect(extractPrefixTicketId(' #123 - test')).toBe('123');
+    });
+
+    test('should support all specified valid formats', () => {
+      // Test all the specific formats mentioned in requirements
+      const validFormats = [
+        ' 123 : test',
+        ' 123: test',
+        '123 : test',
+        '123:adfadf',
+        '123-adfadf',
+        '123 - adfadf',
+        '123- adfadf',
+        ' # 123 : test',
+        ' #123 : test',
+        '#123: test',
+        '#123 : test',
+        '#123:adfadf',
+        ' #123 - test'
+      ];
+
+      validFormats.forEach(format => {
+        expect(extractPrefixTicketId(format)).toBe('123');
+      });
     });
 
     test('should return null for non-prefix formats', () => {
