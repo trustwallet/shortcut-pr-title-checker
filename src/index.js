@@ -8,8 +8,8 @@ const https = require('https');
  */
 function extractTicketId(prTitle) {
   const patterns = [
-    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)-(\d+)(?:\s|$)/i,
-    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$)/i
+    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)-(\d+)(?:\s|$|:)/i,
+    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$|:)/i
   ];
   
   for (const pattern of patterns) {
@@ -34,8 +34,9 @@ function extractTicketId(prTitle) {
 function extractPrefixTicketId(prTitle) {
   const patterns = [
     /^\s*#?\s*(\d+):\s+/i,
-    /^\s*#?\s*(?:sc-)(\d+):\s+/i,
-    /^\s*\[(?:sc-)(\d+)\]:\s+/i
+    /^\s*#?\s*sc-(\d+):\s+/i,
+    /^\s*\[sc-(\d+)\]:\s+/i,
+    /^\s*(?:SC|sc|SHORTCUT|shortcut)-(\d+):\s+/i
   ];
 
   for (const pattern of patterns) {
@@ -266,6 +267,13 @@ async function run() {
     core.setFailed(`Action failed: ${error.message}`);
   }
 }
+
+// Export functions for testing
+module.exports = {
+  extractTicketId,
+  extractPrefixTicketId,
+  run
+};
 
 // Run the action
 run();

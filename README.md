@@ -119,6 +119,9 @@ When `enforce_prefix_check` is enabled, only the following prefix formats are va
 - `sc-1234: Title`
 - `#sc-1234: Title`
 - `[sc-1234]: Title`
+- `SC-1234: Title`
+- `SHORTCUT-1234: Title`
+- `shortcut-1234: Title`
 
 ## Skip Validation
 
@@ -180,6 +183,10 @@ The action will fail with descriptive error messages for:
 - `Fix login bug sc-456`
 - `SHORTCUT-789 Implement new feature`
 - `Update docs for shortcut-101`
+- `1234: Add feature` (prefix format)
+- `#1234: Fix bug` (prefix format)
+- `sc-1234: Implement feature` (prefix format)
+- `[sc-1234]: Update docs` (prefix format)
 
 ### Invalid PR Titles
 

@@ -1,0 +1,25 @@
+#!/usr/bin/env sh
+
+# Check if commit message follows conventional commit format
+commit_regex='^(feat|fix|docs|style|refactor|test|chore|ci|build|perf)(\(.+\))?: .{1,50}'
+
+if ! grep -qE "$commit_regex" "$1"; then
+  echo "❌ Invalid commit message format!"
+  echo ""
+  echo "Please use conventional commit format:"
+  echo "  feat: add new feature"
+  echo "  fix: resolve issue"
+  echo "  docs: update documentation"
+  echo "  test: add tests"
+  echo "  chore: maintenance tasks"
+  echo ""
+  echo "Examples:"
+  echo "  feat: add skip_if_title_contains parameter"
+  echo "  fix: resolve regex pattern matching issue"
+  echo "  docs: update README with new examples"
+  echo "  test: add unit tests for ticket extraction"
+  echo ""
+  exit 1
+fi
+
+echo "✅ Commit message format is valid!"

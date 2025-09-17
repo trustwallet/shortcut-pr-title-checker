@@ -1,0 +1,20 @@
+#!/usr/bin/env sh
+
+echo "🧪 Running pre-commit checks..."
+echo "📋 Running unit tests..."
+npm test
+
+if [ $? -ne 0 ]; then
+  echo "❌ Tests failed. Please fix the issues before committing."
+  exit 1
+fi
+
+echo "🔨 Building action..."
+npm run build
+
+if [ $? -ne 0 ]; then
+  echo "❌ Build failed. Please fix the issues before committing."
+  exit 1
+fi
+
+echo "✅ All pre-commit checks passed!"
