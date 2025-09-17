@@ -1,6 +1,8 @@
 name: Test Shortcut PR Validator
 
 on:
+  push:
+    branches: [main]
   pull_request:
     types: [opened, edited, synchronize]
   workflow_dispatch:
