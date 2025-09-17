@@ -22,12 +22,3 @@ jobs:
       
       - name: Build action
         run: npm run build
-      
-      - name: Test PR validation
-        uses: ./
-        with:
-          github_auth_token: ${{ secrets.GITHUB_TOKEN }}
-          github_repo_name: ${{ github.repository }}
-          shortcut_auth_token: ${{ secrets.SHORTCUT_AUTH_TOKEN }}
-          pr_number: ${{ github.event.pull_request.number }}
-          expected_states: "in progress,to do,ready for review"

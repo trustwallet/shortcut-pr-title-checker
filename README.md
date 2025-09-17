@@ -28,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR Title
-        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.4
+        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.5
         with:
           github_auth_token: ${{ secrets.GITHUB_TOKEN }}
           github_repo_name: ${{ github.repository }}
@@ -57,7 +57,7 @@ jobs:
       
       - name: Validate PR Title
         id: validate
-        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.4
+        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.5
         with:
           github_auth_token: ${{ secrets.GITHUB_TOKEN }}
           github_repo_name: ${{ github.repository }}
