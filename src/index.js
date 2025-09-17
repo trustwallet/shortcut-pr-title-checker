@@ -89,6 +89,33 @@ function makeShortcutRequest(token, endpoint) {
 }
 
 /**
+ * Fetches workflow states from Shortcut API
+ */
+async function getWorkflowStates(authToken) {
+  try {
+    const response = await makeShortcutRequest(authToken, '/api/v3/workflows');
+    
+    if (response.statusCode !== 200) {
+      throw new Error(`Shortcut API returned status ${response.statusCode}: ${response.data.message || 'Unknown error'}`);
+    }
+    
+    // Flatten all states from all workflows into a single map
+    const stateMap = new Map();
+    response.data.forEach(workflow => {
+      if (workflow.states) {
+        workflow.states.forEach(state => {
+          stateMap.set(state.id, state.name);
+        });
+      }
+    });
+    
+    return stateMap;
+  } catch (error) {
+    throw new Error(`Failed to fetch workflow states: ${error.message}`);
+  }
+}
+
+/**
  * Validates Shortcut ticket and checks linked PRs
  */
 async function validateTicket(ticketId, authToken, expectedStates, checkUniquePR = false) {
@@ -100,7 +127,11 @@ async function validateTicket(ticketId, authToken, expectedStates, checkUniquePR
     }
     
     const ticket = response.data;
-    const currentState = ticket.workflow_state.name.toLowerCase();
+    
+    // Get workflow states to map workflow_state_id to state name
+    const stateMap = await getWorkflowStates(authToken);
+    const currentStateName = stateMap.get(ticket.workflow_state_id) || 'Unknown State';
+    const currentState = currentStateName.toLowerCase();
     const normalizedExpectedStates = expectedStates.map(state => state.toLowerCase().trim());
     
     // Check linked PRs if requested
@@ -116,7 +147,7 @@ async function validateTicket(ticketId, authToken, expectedStates, checkUniquePR
     return {
       id: ticket.id,
       title: ticket.name,
-      state: ticket.workflow_state.name,
+      state: currentStateName,
       isValid: normalizedExpectedStates.includes(currentState),
       currentState: currentState,
       linkedPRs: linkedPRs
