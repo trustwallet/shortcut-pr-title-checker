@@ -5,7 +5,8 @@ A GitHub Action that validates Pull Request titles contain valid Shortcut ticket
 ## Features
 
 - ✅ Validates PR titles contain Shortcut ticket numbers (SC-123, sc-456, SHORTCUT-789, etc.)
-- ✅ Optional strict prefix validation (e.g., `1234: title`, `#1234: title`, `sc-1234: title`, `#sc-1234: title`, `[sc-1234]: title`)
+- ✅ Optional strict prefix validation with flexible spacing (e.g., `1234: title`, `#1234: title`, `sc-1234: title`, `#sc-1234: title`, `[sc-1234]: title`)
+- ✅ Supports flexible spacing and separators (` 123 : test`, `123-adfadf`, ` #123 : test`, etc.)
 - ✅ Optionally enforces single PR for each ticket (via Shortcut API pull_requests.url)
 - ✅ Verifies tickets exist in Shortcut via API
 - ✅ Checks ticket states against expected values
@@ -28,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR Title
-        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
         with:
           github_auth_token: ${{ secrets.GITHUB_TOKEN }}
           github_repo_name: ${{ github.repository }}
@@ -54,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR Title
-        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
         with:
           github_auth_token: ${{ secrets.GITHUB_TOKEN }}
           github_repo_name: ${{ github.repository }}
@@ -83,7 +84,7 @@ jobs:
       
       - name: Validate PR Title
         id: validate
-        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
         with:
           github_auth_token: ${{ secrets.GITHUB_TOKEN }}
           github_repo_name: ${{ github.repository }}
@@ -139,7 +140,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Minimal Configuration (Uses All Defaults)
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
   with:
     github_auth_token: ${{ secrets.GITHUB_TOKEN }}
     github_repo_name: ${{ github.repository }}
@@ -151,7 +152,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Allow Non-Prefix Formats
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
   with:
     # ... other required inputs
     enforce_prefix_check: "false"  # Allow "Fix bug in SC-123" format
@@ -159,7 +160,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Allow Multiple PRs Per Ticket
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
   with:
     # ... other required inputs
     enforce_single_pr_for_each_ticket: "false"  # Allow multiple PRs per ticket
@@ -167,7 +168,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Skip Validation for Specific Cases
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
   with:
     # ... other required inputs
     skip_if_title_contains: "Bump SDK,no ticket for this PR"  # Skip these cases
@@ -175,7 +176,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Relaxed Configuration (All Checks Disabled)
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
   with:
     # ... other required inputs
     enforce_prefix_check: "false"  # Allow any ticket format
@@ -196,6 +197,7 @@ The action recognizes the following ticket formats in PR titles:
 
 When `enforce_prefix_check` is enabled, only the following prefix formats are valid:
 
+**Basic Formats:**
 - `1234: Title`
 - `#1234: Title`
 - `sc-1234: Title`
@@ -204,6 +206,21 @@ When `enforce_prefix_check` is enabled, only the following prefix formats are va
 - `SC-1234: Title`
 - `SHORTCUT-1234: Title`
 - `shortcut-1234: Title`
+
+**Flexible Spacing Formats (v1.0.8+):**
+- ` 123 : test` (spaces around colon)
+- ` 123: test` (space before colon)
+- `123 : test` (space after colon)
+- `123:adfadf` (no spaces)
+- `123-adfadf` (dash separator)
+- `123 - adfadf` (dash with spaces)
+- `123- adfadf` (dash with trailing space)
+- ` # 123 : test` (hash with spaces)
+- ` #123 : test` (hash with space before number)
+- `#123: test` (hash with space after colon)
+- `#123 : test` (hash with space before colon)
+- `#123:adfadf` (hash with no spaces)
+- ` #123 - test` (hash with dash separator)
 
 ## Skip Validation
 
@@ -261,20 +278,54 @@ The action will fail with descriptive error messages for:
 
 ### Valid PR Titles
 
+**Standard Formats:**
 - `SC-123: Add user authentication`
 - `Fix login bug sc-456`
 - `SHORTCUT-789 Implement new feature`
 - `Update docs for shortcut-101`
-- `1234: Add feature` (prefix format)
-- `#1234: Fix bug` (prefix format)
-- `sc-1234: Implement feature` (prefix format)
-- `[sc-1234]: Update docs` (prefix format)
+
+**Prefix Formats:**
+- `1234: Add feature`
+- `#1234: Fix bug`
+- `sc-1234: Implement feature`
+- `[sc-1234]: Update docs`
+
+**Flexible Spacing Formats (v1.0.8+):**
+- ` 123 : Add feature` (spaces around colon)
+- ` 123: Fix bug` (space before colon)
+- `123 : Implement feature` (space after colon)
+- `123:adfadf` (no spaces)
+- `123-adfadf` (dash separator)
+- `123 - adfadf` (dash with spaces)
+- ` # 123 : test` (hash with spaces)
+- ` #123 : test` (hash with space before number)
+- `#123: test` (hash with space after colon)
+- `#123:adfadf` (hash with no spaces)
+- ` #123 - test` (hash with dash separator)
 
 ### Invalid PR Titles
 
 - `Add new feature` (no ticket number)
 - `Fix bug` (no ticket number)
 - `SC-999: Invalid ticket` (ticket doesn't exist)
+
+## Changelog
+
+### v1.0.8 (Latest)
+- ✨ **New**: Added support for flexible spacing in ticket number formats
+- ✨ **New**: Support for both colon (`:`) and dash (`-`) separators
+- ✨ **New**: Support for various hash (`#`) spacing combinations
+- 🐛 **Fix**: Resolved issue with `#94558: sravan/validate-pr-have-valid-ticket` format
+- ✅ **Enhanced**: Comprehensive unit tests for all format variations
+- 📚 **Docs**: Updated README with new flexible format examples
+
+**Supported Flexible Formats:**
+- ` 123 : test`, ` 123: test`, `123 : test`, `123:adfadf`
+- `123-adfadf`, `123 - adfadf`, `123- adfadf`
+- ` # 123 : test`, ` #123 : test`, `#123: test`, `#123 : test`, `#123:adfadf`, ` #123 - test`
+
+### v1.0.7
+- Initial release with basic Shortcut ticket validation
 
 ## Development
 
