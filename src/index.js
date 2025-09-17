@@ -173,7 +173,7 @@ async function run() {
       .split(',')
       .map(state => state.trim())
       .filter(state => state.length > 0);
-    const enforcePrefixCheck = (core.getInput('enforce_prefix_check') || 'false').toLowerCase() === 'true';
+    const enforcePrefixCheck = (core.getInput('enforce_prefix_check') || 'true').toLowerCase() === 'true';
     const enforceSinglePrForEachTicket = (core.getInput('enforce_single_pr_for_each_ticket') || 'true').toLowerCase() === 'true';
     const skipIfTitleContains = core.getInput('skip_if_title_contains', { required: false })
       .split(',')

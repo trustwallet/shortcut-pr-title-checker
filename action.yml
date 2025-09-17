@@ -22,7 +22,7 @@ inputs:
   enforce_prefix_check:
     description: 'If true, require the ticket number/pattern at the beginning of the PR title'
     required: false
-    default: 'false'
+    default: 'true'
   enforce_single_pr_for_each_ticket:
     description: 'If true, ensure only one PR is linked to the ticket in Shortcut (checks pull_requests.url)'
     required: false

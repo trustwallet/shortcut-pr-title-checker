@@ -15,7 +15,33 @@ A GitHub Action that validates Pull Request titles contain valid Shortcut ticket
 
 ## Usage
 
-### Basic Usage
+### Basic Usage (Minimal Configuration)
+
+```yaml
+name: Validate PR Title
+on:
+  pull_request:
+    types: [opened, edited, synchronize]
+
+jobs:
+  validate-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR Title
+        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+        with:
+          github_auth_token: ${{ secrets.GITHUB_TOKEN }}
+          github_repo_name: ${{ github.repository }}
+          shortcut_auth_token: ${{ secrets.SHORTCUT_AUTH_TOKEN }}
+          pr_number: ${{ github.event.pull_request.number }}
+          expected_states: "in progress,to do,ready for review"
+          # All other parameters use sensible defaults:
+          # enforce_prefix_check: "true" (default)
+          # enforce_single_pr_for_each_ticket: "true" (default)
+          # skip_if_title_contains: "" (default - no skip)
+```
+
+### Standard Usage (Explicit Configuration)
 
 ```yaml
 name: Validate PR Title
@@ -87,7 +113,7 @@ jobs:
 | `shortcut_auth_token` | ✅ | Shortcut API authentication token | - |
 | `pr_number` | ✅ | Pull request number to validate | - |
 | `expected_states` | ✅ | Comma-separated list of expected Shortcut ticket states | `"in progress,to do,ready for review"` |
-| `enforce_prefix_check` | ❌ | Require ticket prefix in PR title (see formats) | `"false"` |
+| `enforce_prefix_check` | ❌ | Require ticket prefix in PR title (see formats) | `"true"` |
 | `enforce_single_pr_for_each_ticket` | ❌ | Ensure only one PR linked per ticket (checks Shortcut API pull_requests.url) | `"true"` |
 | `skip_if_title_contains` | ❌ | Comma-separated list of strings to check in PR title. If any string is found, skip validation | `""` |
 
@@ -100,6 +126,62 @@ jobs:
 | `ticket_state` | The current state of the Shortcut ticket |
 | `skipped` | Whether validation was skipped (true/false) |
 | `skip_reason` | Reason for skipping validation (if applicable) |
+
+## Default Behavior
+
+The action comes with sensible defaults that work for most use cases:
+
+- **`enforce_prefix_check: "true"`** - Requires PR titles to use prefix formats (e.g., `SC-123: Title`)
+- **`enforce_single_pr_for_each_ticket: "true"`** - Ensures only one PR is linked to each Shortcut ticket
+- **`skip_if_title_contains: ""`** - No automatic skipping (validates all PRs)
+
+### Usage Examples with Different Configurations
+
+#### Minimal Configuration (Uses All Defaults)
+```yaml
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+  with:
+    github_auth_token: ${{ secrets.GITHUB_TOKEN }}
+    github_repo_name: ${{ github.repository }}
+    shortcut_auth_token: ${{ secrets.SHORTCUT_AUTH_TOKEN }}
+    pr_number: ${{ github.event.pull_request.number }}
+    expected_states: "in progress,to do,ready for review"
+    # All other parameters use defaults
+```
+
+#### Allow Non-Prefix Formats
+```yaml
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+  with:
+    # ... other required inputs
+    enforce_prefix_check: "false"  # Allow "Fix bug in SC-123" format
+```
+
+#### Allow Multiple PRs Per Ticket
+```yaml
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+  with:
+    # ... other required inputs
+    enforce_single_pr_for_each_ticket: "false"  # Allow multiple PRs per ticket
+```
+
+#### Skip Validation for Specific Cases
+```yaml
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+  with:
+    # ... other required inputs
+    skip_if_title_contains: "Bump SDK,no ticket for this PR"  # Skip these cases
+```
+
+#### Relaxed Configuration (All Checks Disabled)
+```yaml
+- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.6
+  with:
+    # ... other required inputs
+    enforce_prefix_check: "false"  # Allow any ticket format
+    enforce_single_pr_for_each_ticket: "false"  # Allow multiple PRs
+    skip_if_title_contains: "Bump SDK,no ticket"  # Skip common cases
+```
 
 ## Supported Ticket Formats
 
