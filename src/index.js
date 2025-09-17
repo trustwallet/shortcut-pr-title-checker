@@ -143,7 +143,7 @@ async function validateTicket(ticketId, authToken, expectedStates, checkUniquePR
         const prUrls = linkedPRs.map(pr => pr.url).join(', ');
         throw new Error(`Multiple PRs linked to ticket SC-${ticketId}: ${prUrls}`);
       }
-    }t
+    }
     
     return {
       id: ticket.id,
