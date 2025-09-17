@@ -144,6 +144,10 @@ async function run() {
     const enforcePrefixCheck = (core.getInput('enforce_prefix_check') || 'false').toLowerCase() === 'true';
     const enforceSinglePrForEachTicket = (core.getInput('enforce_single_pr_for_each_ticket') || 'true').toLowerCase() === 'true';
 
+    // Mask sensitive inputs in logs
+    core.setSecret(githubToken);
+    core.setSecret(shortcutToken);
+
     // Validate inputs
     if (expectedStates.length === 0) {
       throw new Error('Expected states cannot be empty');
