@@ -3,6 +3,7 @@ name: Test Shortcut PR Validator
 on:
   pull_request:
     types: [opened, edited, synchronize]
+  workflow_dispatch:
 
 jobs:
   test-validation:
