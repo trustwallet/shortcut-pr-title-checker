@@ -37,7 +37,7 @@ jobs:
           expected_states: "in progress,to do,ready for review"
           enforce_prefix_check: "true"   # require prefix formats
           enforce_single_pr_for_each_ticket: "true"  # ensure only one PR linked per ticket
-          skip_pr_title_include: "Bump SDK,no ticket for this PR"  # skip validation for these cases
+          skip_if_title_contains: "Bump SDK,no ticket for this PR"  # skip validation for these cases
 ```
 
 ### Advanced Usage
@@ -89,7 +89,7 @@ jobs:
 | `expected_states` | ✅ | Comma-separated list of expected Shortcut ticket states | `"in progress,to do,ready for review"` |
 | `enforce_prefix_check` | ❌ | Require ticket prefix in PR title (see formats) | `"false"` |
 | `enforce_single_pr_for_each_ticket` | ❌ | Ensure only one PR linked per ticket (checks Shortcut API pull_requests.url) | `"true"` |
-| `skip_pr_title_include` | ❌ | Comma-separated list of strings to check in PR title. If any string is found, skip validation | `""` |
+| `skip_if_title_contains` | ❌ | Comma-separated list of strings to check in PR title. If any string is found, skip validation | `""` |
 
 ## Outputs
 
@@ -122,10 +122,10 @@ When `enforce_prefix_check` is enabled, only the following prefix formats are va
 
 ## Skip Validation
 
-The action can skip validation for PRs with specific title patterns using the `skip_pr_title_include` parameter:
+The action can skip validation for PRs with specific title patterns using the `skip_if_title_contains` parameter:
 
 ```yaml
-skip_pr_title_include: "Bump SDK,no ticket for this PR,chore:"
+skip_if_title_contains: "Bump SDK,no ticket for this PR,chore:"
 ```
 
 This will skip validation for PRs with titles containing any of these strings (case-insensitive):

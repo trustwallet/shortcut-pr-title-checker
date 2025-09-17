@@ -174,7 +174,7 @@ async function run() {
       .filter(state => state.length > 0);
     const enforcePrefixCheck = (core.getInput('enforce_prefix_check') || 'false').toLowerCase() === 'true';
     const enforceSinglePrForEachTicket = (core.getInput('enforce_single_pr_for_each_ticket') || 'true').toLowerCase() === 'true';
-    const skipPrTitleInclude = core.getInput('skip_pr_title_include', { required: false })
+    const skipIfTitleContains = core.getInput('skip_if_title_contains', { required: false })
       .split(',')
       .map(str => str.trim())
       .filter(str => str.length > 0);
@@ -207,13 +207,13 @@ async function run() {
     core.info(`Validating PR #${prNumber}: "${prTitle}"`);
 
     // Check if PR title should be skipped
-    if (skipPrTitleInclude.length > 0) {
-      const shouldSkip = skipPrTitleInclude.some(skipString => 
+    if (skipIfTitleContains.length > 0) {
+      const shouldSkip = skipIfTitleContains.some(skipString => 
         prTitle.toLowerCase().includes(skipString.toLowerCase())
       );
       
       if (shouldSkip) {
-        const matchedString = skipPrTitleInclude.find(skipString => 
+        const matchedString = skipIfTitleContains.find(skipString => 
           prTitle.toLowerCase().includes(skipString.toLowerCase())
         );
         core.info(`⏭️ Skipping validation for PR #${prNumber}: Title contains "${matchedString}"`);

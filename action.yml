@@ -27,7 +27,7 @@ inputs:
     description: 'If true, ensure only one PR is linked to the ticket in Shortcut (checks pull_requests.url)'
     required: false
     default: 'true'
-  skip_pr_title_include:
+  skip_if_title_contains:
     description: 'Comma-separated list of strings to check in PR title. If any string is found, skip validation'
     required: false
     default: ''
