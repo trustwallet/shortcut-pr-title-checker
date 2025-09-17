@@ -1,6 +1,6 @@
 {
   "name": "shortcut-pr-validator",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "GitHub Action to validate PR titles against Shortcut ticket numbers",
   "main": "dist/index.js",
   "scripts": {
