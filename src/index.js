@@ -4,12 +4,15 @@ const https = require('https');
 
 /**
  * Extracts Shortcut ticket ID from PR title (anywhere in the title)
- * Supports formats like: "SC-123", "sc-456", "SHORTCUT-789", etc.
+ * Supports formats like: "SC-123", "sc-456", "SHORTCUT-789", "[sc-123]", etc.
  */
 function extractTicketId(prTitle) {
   const patterns = [
     /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)-(\d+)(?:\s|$|:)/i,
     /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$|:)/i,
+
+    /\[(?:SC|SHORTCUT)-(\d+)\]/i,
+
     // Support flexible number patterns anywhere in title
     /(?:^|\s)#?\s*(\d+)\s*:\s*/i,
     /(?:^|\s)#?\s*(\d+)\s*-\s*/i
