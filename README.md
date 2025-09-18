@@ -29,7 +29,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR Title
-        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
+        uses: trustwallet/shortcut-pr-title-checker@v1.0.0
         with:
           github_auth_token: ${{ secrets.GITHUB_TOKEN }}
           github_repo_name: ${{ github.repository }}
@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validate PR Title
-        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
+        uses: trustwallet/shortcut-pr-title-checker@v1.0.0
         with:
           github_auth_token: ${{ secrets.GITHUB_TOKEN }}
           github_repo_name: ${{ github.repository }}
@@ -84,7 +84,7 @@ jobs:
       
       - name: Validate PR Title
         id: validate
-        uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
+        uses: trustwallet/shortcut-pr-title-checker@v1.0.0
         with:
           github_auth_token: ${{ secrets.GITHUB_TOKEN }}
           github_repo_name: ${{ github.repository }}
@@ -140,7 +140,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Minimal Configuration (Uses All Defaults)
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
+- uses: trustwallet/shortcut-pr-title-checker@v1.0.0
   with:
     github_auth_token: ${{ secrets.GITHUB_TOKEN }}
     github_repo_name: ${{ github.repository }}
@@ -152,7 +152,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Allow Non-Prefix Formats
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
+- uses: trustwallet/shortcut-pr-title-checker@v1.0.0
   with:
     # ... other required inputs
     enforce_prefix_check: "false"  # Allow "Fix bug in SC-123" format
@@ -160,7 +160,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Allow Multiple PRs Per Ticket
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
+- uses: trustwallet/shortcut-pr-title-checker@v1.0.0
   with:
     # ... other required inputs
     enforce_single_pr_for_each_ticket: "false"  # Allow multiple PRs per ticket
@@ -168,7 +168,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Skip Validation for Specific Cases
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
+- uses: trustwallet/shortcut-pr-title-checker@v1.0.0
   with:
     # ... other required inputs
     skip_if_title_contains: "Bump SDK,no ticket for this PR"  # Skip these cases
@@ -176,7 +176,7 @@ The action comes with sensible defaults that work for most use cases:
 
 #### Relaxed Configuration (All Checks Disabled)
 ```yaml
-- uses: sravanmedarapu/shortcut-pr-title-validator@v1.0.8
+- uses: trustwallet/shortcut-pr-title-checker@v1.0.0
   with:
     # ... other required inputs
     enforce_prefix_check: "false"  # Allow any ticket format
@@ -207,7 +207,7 @@ When `enforce_prefix_check` is enabled, only the following prefix formats are va
 - `SHORTCUT-1234: Title`
 - `shortcut-1234: Title`
 
-**Flexible Spacing Formats (v1.0.8+):**
+**Flexible Spacing Formats (v1.0.0+):**
 - ` 123 : test` (spaces around colon)
 - ` 123: test` (space before colon)
 - `123 : test` (space after colon)
@@ -290,7 +290,7 @@ The action will fail with descriptive error messages for:
 - `sc-1234: Implement feature`
 - `[sc-1234]: Update docs`
 
-**Flexible Spacing Formats (v1.0.8+):**
+**Flexible Spacing Formats (v1.0.0+):**
 - ` 123 : Add feature` (spaces around colon)
 - ` 123: Fix bug` (space before colon)
 - `123 : Implement feature` (space after colon)
@@ -311,7 +311,7 @@ The action will fail with descriptive error messages for:
 
 ## Changelog
 
-### v1.0.8 (Latest)
+### v1.0.0 (Latest)
 - ✨ **New**: Added support for flexible spacing in ticket number formats
 - ✨ **New**: Support for both colon (`:`) and dash (`-`) separators
 - ✨ **New**: Support for various hash (`#`) spacing combinations
