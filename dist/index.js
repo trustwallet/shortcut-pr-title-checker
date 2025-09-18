@@ -29935,11 +29935,14 @@ const https = __nccwpck_require__(5692);
  */
 function extractTicketId(prTitle) {
   const patterns = [
-    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)-(\d+)(?:\s|$|:)/i,
-    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$|:)/i,
+    /\[\s*(?:SC|sc|SHORTCUT|shortcut)-(\d+)\s*\]/i,
+    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)-(\d+)(?:\s|$|:|\])/i,
+    /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$|:|\])/i,
     // Support flexible number patterns anywhere in title
     /(?:^|\s)#?\s*(\d+)\s*:\s*/i,
-    /(?:^|\s)#?\s*(\d+)\s*-\s*/i
+    /(?:^|\s)#?\s*(\d+)\s*-\s*/i,
+    // Parentheses with hash: (#1234)
+    /\(#\s*(\d+)\s*\)/i
   ];
   
   for (const pattern of patterns) {
