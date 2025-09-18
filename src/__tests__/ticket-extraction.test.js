@@ -56,6 +56,26 @@ describe('Ticket ID Extraction Functions', () => {
       expect(extractTicketId('SC-999999: Large number')).toBe('999999');
       expect(extractTicketId('  SC-123  : Whitespace  ')).toBe('123');
     });
+
+    test('should extract bracketed [sc-1234] anywhere in title', () => {
+      expect(extractTicketId('feat: test hotfix [sc-93630]')).toBe('93630');
+      expect(extractTicketId('docs: update README [SC-1234] minor')).toBe('1234');
+      expect(extractTicketId('[sc-42] chore: bump dep')).toBe('42');
+    });
+
+    test('should validate user-provided examples', () => {
+      expect(extractTicketId('[Home][SC-94667] Fix: Prevent Blocking the Bottom Area by Footer')).toBe('94667');
+      expect(extractTicketId('feat: [sc-80021] improve handling of dollar-like currencies')).toBe('80021');
+      expect(extractTicketId('sc-89480 feat(feature): Support KMP LP')).toBe('89480');
+      expect(extractTicketId('fix: Give flagged_address more priority for security scanning (#84563)')).toBe('84563');
+    });
+
+    test('should return null for user-provided invalid titles without tickets', () => {
+      expect(extractTicketId('[KMP] fix  deeplink')).toBeNull();
+      expect(extractTicketId('feat(place-order): fetch balance & update some UI')).toBeNull();
+      expect(extractTicketId('Return copy button to home screen')).toBeNull();
+      expect(extractTicketId('feat(perp): add basic models for place order')).toBeNull();
+    });
   });
 
   describe('extractPrefixTicketId - Prefix-only formats', () => {

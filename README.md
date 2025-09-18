@@ -2,6 +2,24 @@
 
 A GitHub Action that validates Pull Request titles contain valid Shortcut ticket numbers and checks that the tickets are in expected states.
 
+## Quick Reference
+
+### Valid PR Title Examples
+- `SC-123: Add user authentication` (prefix format)
+- `feat: test hotfix [sc-93630]` (ticket anywhere, bracketed)
+- `[Home][SC-94667] Fix: Prevent Blocking the Bottom Area by Footer` (ticket inside brackets)
+- `feat: [sc-80021] improve handling of dollar-like currencies` (ticket in brackets anywhere)
+- `sc-89480 feat(feature): Support KMP LP` (ticket at start)
+- `fix: Give flagged_address more priority for security scanning (#84563)` (ticket as (#12345))
+
+### Invalid PR Title Examples
+- `[KMP] fix  deeplink` (no ticket)
+- `feat(place-order): fetch balance & update some UI` (no ticket)
+- `Return copy button to home screen` (no ticket)
+- `feat(perp): add basic models for place order` (no ticket)
+
+Tip: By default, prefix formats are required (e.g., `SC-123: Title`, `1234: Title`). To allow tickets anywhere in the title, set `enforce_prefix_check: "false"` in your workflow inputs.
+
 ## Features
 
 - ✅ Validates PR titles contain Shortcut ticket numbers (SC-123, sc-456, SHORTCUT-789, etc.)
