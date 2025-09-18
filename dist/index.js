@@ -29937,9 +29937,9 @@ function extractTicketId(prTitle) {
   const patterns = [
     /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)-(\d+)(?:\s|$|:)/i,
     /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$|:)/i,
-    // Support for plain number patterns like "#94558: title" or "94558: title" (must have space after colon and be at start)
-    /^#(\d+):\s+/i,
-    /^(\d+):\s+/i
+    // Support flexible number patterns anywhere in title
+    /(?:^|\s)#?\s*(\d+)\s*:\s*/i,
+    /(?:^|\s)#?\s*(\d+)\s*-\s*/i
   ];
   
   for (const pattern of patterns) {
@@ -29963,10 +29963,14 @@ function extractTicketId(prTitle) {
  */
 function extractPrefixTicketId(prTitle) {
   const patterns = [
-    /^\s*#?\s*(\d+):\s+/i,
-    /^\s*#?\s*sc-(\d+):\s+/i,
-    /^\s*\[sc-(\d+)\]:\s+/i,
-    /^\s*(?:SC|sc|SHORTCUT|shortcut)-(\d+):\s+/i
+    // Support flexible spacing: " 123 : test", " 123: test", "123 : test", "123:adfadf"
+    /^\s*#?\s*(\d+)\s*:\s*/i,
+    // Support dash separators: "123-adfadf", "123 - adfadf", "123- adfadf"
+    /^\s*#?\s*(\d+)\s*-\s*/i,
+    // Support SC patterns with flexible spacing
+    /^\s*#?\s*sc-(\d+)\s*:\s*/i,
+    /^\s*\[sc-(\d+)\]\s*:\s*/i,
+    /^\s*(?:SC|sc|SHORTCUT|shortcut)-(\d+)\s*:\s*/i
   ];
 
   for (const pattern of patterns) {
