@@ -57,6 +57,11 @@ describe('Ticket ID Extraction Functions', () => {
       expect(extractTicketId('  SC-123  : Whitespace  ')).toBe('123');
     });
 
+    test('should extract hash-number followed by space anywhere', () => {
+      expect(extractTicketId('#95646 feat: Update shortcut PR title checker to version 1.1.1')).toBe('95646');
+      expect(extractTicketId('chore: follow up to #12345 fix')).toBe('12345');
+    });
+
     test('should extract bracketed [sc-1234] anywhere in title', () => {
       expect(extractTicketId('feat: test hotfix [sc-93630]')).toBe('93630');
       expect(extractTicketId('docs: update README [SC-1234] minor')).toBe('1234');
@@ -128,6 +133,10 @@ describe('Ticket ID Extraction Functions', () => {
     test('should extract #1234 followed by space before title', () => {
       expect(extractPrefixTicketId('#94875 feat(Feature): Expose FeatureModule.observeMyEarningsState() for iOS')).toBe('94875');
       expect(extractPrefixTicketId('  #123 feat: spaced prefix')).toBe('123');
+    });
+
+    test('should extract hash-number space for version bump example', () => {
+      expect(extractPrefixTicketId('#95646 feat: Update shortcut PR title checker to version 1.1.1')).toBe('95646');
     });
 
     test('should return null for non-prefix formats', () => {
