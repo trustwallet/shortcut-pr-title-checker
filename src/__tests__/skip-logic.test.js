@@ -135,4 +135,31 @@ describe('Skip Logic Tests', () => {
       }
     });
   });
+
+  test('should skip when title contains [External Team] pattern', () => {
+    const skipIfTitleContains = ['Bump SDK', 'Merge release', '[Release]', '[External Team]'];
+    const title = 'feat: feeature fix [External Team]';
+
+    const shouldSkip = skipIfTitleContains.some(skipString => 
+      title.toLowerCase().includes(skipString.toLowerCase())
+    );
+
+    expect(shouldSkip).toBe(true);
+  });
+
+  test('should skip [External Team] case-insensitively', () => {
+    const skipIfTitleContains = ['[external team]'];
+    const cases = [
+      'feat: thing [EXTERNAL TEAM]',
+      'chore: refactor [external team]',
+      'fix: bug [External Team]'
+    ];
+
+    cases.forEach(title => {
+      const shouldSkip = skipIfTitleContains.some(skipString =>
+        title.toLowerCase().includes(skipString.toLowerCase())
+      );
+      expect(shouldSkip).toBe(true);
+    });
+  });
 });

@@ -39,6 +39,8 @@ function extractTicketId(prTitle) {
  */
 function extractPrefixTicketId(prTitle) {
   const patterns = [
+    // Allow hash-number followed by space before title (e.g., "#1234 feat: ...")
+    /^\s*#\s*(\d+)\s+(?=\S)/i,
     // Support flexible spacing: " 123 : test", " 123: test", "123 : test", "123:adfadf"
     /^\s*#?\s*(\d+)\s*:\s*/i,
     // Support dash separators: "123-adfadf", "123 - adfadf", "123- adfadf"
@@ -237,12 +239,27 @@ async function run() {
     // Extract ticket ID from PR title
     const ticketId = enforcePrefixCheck ? extractPrefixTicketId(prTitle) : extractTicketId(prTitle);
     if (!ticketId) {
+      const prefixExamples = [
+        '1234: Title',
+        '#1234: Title',
+        '#1234 Title',
+        'sc-1234: Title',
+        '#sc-1234: Title',
+        '[sc-1234]: Title'
+      ].join(', ');
+      const anywhereExamples = [
+        'feat: hotfix [sc-1234]',
+        'docs: SHORTCUT-1234 update',
+        'fix: issue (#1234)'
+      ].join(', ');
+
       const errorMsg = enforcePrefixCheck
         ? `❌ PR title must start with a Shortcut ticket number.\n` +
-          `Valid prefixes: "1234: title", "#1234: title", "sc-1234: title", "#sc-1234: title", "[sc-1234]: title"\n` +
+          `Valid prefix formats: ${prefixExamples}\n` +
           `Current title: "${prTitle}"`
         : `❌ PR title does not contain a valid Shortcut ticket number.\n` +
-          `Examples: "SC-123", "sc-456", "SHORTCUT-789"\n` +
+          `Valid examples: ${anywhereExamples}\n` +
+          `Tip: Also supports SC-forms anywhere (e.g., "SC-1234", "sc1234").\n` +
           `Current title: "${prTitle}"`;
       core.setFailed(errorMsg);
       return;

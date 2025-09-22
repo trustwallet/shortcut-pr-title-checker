@@ -60,6 +60,7 @@ describe('Ticket ID Extraction Functions', () => {
     test('should extract bracketed [sc-1234] anywhere in title', () => {
       expect(extractTicketId('feat: test hotfix [sc-93630]')).toBe('93630');
       expect(extractTicketId('docs: update README [SC-1234] minor')).toBe('1234');
+      expect(extractTicketId('fix: test workflow a [SHORTCUT-92675]')).toBe('92675');
       expect(extractTicketId('[sc-42] chore: bump dep')).toBe('42');
     });
 
@@ -124,6 +125,11 @@ describe('Ticket ID Extraction Functions', () => {
       expect(extractPrefixTicketId('  [sc-1234]: Add feature')).toBe('1234');
     });
 
+    test('should extract #1234 followed by space before title', () => {
+      expect(extractPrefixTicketId('#94875 feat(Feature): Expose FeatureModule.observeMyEarningsState() for iOS')).toBe('94875');
+      expect(extractPrefixTicketId('  #123 feat: spaced prefix')).toBe('123');
+    });
+
     test('should return null for non-prefix formats', () => {
       expect(extractPrefixTicketId('Add feature SC-123')).toBeNull();
       expect(extractPrefixTicketId('Fix bug sc-456')).toBeNull();
@@ -134,6 +140,7 @@ describe('Ticket ID Extraction Functions', () => {
       expect(extractPrefixTicketId('Fix bug')).toBeNull();
       expect(extractPrefixTicketId('1234 Title')).toBeNull();
       expect(extractPrefixTicketId('1234')).toBeNull();
+      expect(extractPrefixTicketId('#xxx feat(feature): donot fire the fire')).toBeNull();
       expect(extractPrefixTicketId('')).toBeNull();
     });
 
