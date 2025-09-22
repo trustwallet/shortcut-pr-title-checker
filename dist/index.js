@@ -29939,6 +29939,8 @@ function extractTicketId(prTitle) {
     /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)-(\d+)(?:\s|$|:|\])/i,
     /(?:^|\s)(?:SC|sc|SHORTCUT|shortcut)(\d+)(?:\s|$|:|\])/i,
     // Support flexible number patterns anywhere in title
+    // Hash-number followed by space anywhere: "#1234 ..."
+    /(?:^|\s)#\s*(\d+)\s+(?=\S)/i,
     /(?:^|\s)#?\s*(\d+)\s*:\s*/i,
     /(?:^|\s)#?\s*(\d+)\s*-\s*/i,
     // Parentheses with hash: (#1234)
